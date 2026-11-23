@@ -1,0 +1,60 @@
+<!doctype html>
+<html
+  lang="bg"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Детайли | EventHub</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments/nav :: nav}"></header>
+    <main class="container narrow">
+      <a th:href="@{/}">← Всички събития</a>
+      <article class="panel">
+        <span class="pill" th:text="${event.location}">Място</span>
+        <h1 th:text="${event.title}">Заглавие</h1>
+        <p
+          class="muted"
+          th:text="${#temporals.format(event.startsAt,'dd.MM.yyyy HH:mm')}"
+        >
+          Дата
+        </p>
+        <p class="description" th:text="${event.description}">Описание</p>
+        <p>
+          <strong th:text="${count}">0</strong> записани от
+          <strong th:text="${event.capacity}">30</strong> места
+        </p>
+        <p class="alert success" th:if="${success}" th:text="${success}"></p>
+        <p class="alert error" th:if="${error}" th:text="${error}"></p>
+        <div sec:authorize="isAuthenticated()">
+          <form
+            th:if="${!joined}"
+            th:action="@{/events/{id}/join(id=${event.id})}"
+            method="post"
+          >
+            <button
+              class="btn"
+              th:disabled="${count >= event.capacity or !event.startsAt.isAfter(T(java.time.LocalDateTime).now())}"
+            >
+              Запиши се
+            </button>
+          </form>
+          <form
+            th:if="${joined}"
+            th:action="@{/events/{id}/leave(id=${event.id})}"
+            method="post"
+          >
+            <button class="btn secondary">Откажи участие</button>
+          </form>
+        </div>
+        <p sec:authorize="isAnonymous()">
+          <a th:href="@{/login}">Влез в профила си</a>, за да се запишеш.
+        </p>
+      </article>
+    </main>
+  </body>
+</html>

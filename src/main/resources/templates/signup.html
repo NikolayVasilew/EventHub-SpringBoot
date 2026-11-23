@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Регистрация | EventHub</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+    <style>
+      .signup-panel {
+        max-width: 650px;
+        margin: 35px auto;
+        padding: 40px;
+      }
+
+      .signup-subtitle {
+        color: #b8bdd0;
+        line-height: 1.6;
+        margin-bottom: 25px;
+      }
+
+      .password-requirements {
+        background: #0d1326;
+        border: 1px solid #343a57;
+        border-radius: 12px;
+        padding: 18px;
+        margin-top: 12px;
+      }
+
+      .password-requirements h3 {
+        margin: 0 0 14px;
+        font-size: 14px;
+        color: #e9eaf4;
+      }
+
+      .password-rule {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #a6abc1;
+        font-size: 13px;
+        margin: 9px 0;
+      }
+
+      .password-rule::before {
+        content: "○";
+        font-size: 17px;
+      }
+
+      .password-rule.valid {
+        color: #b4f3d8;
+      }
+
+      .password-rule.valid::before {
+        content: "✓";
+        color: #65d8ae;
+      }
+
+      .password-field {
+        position: relative;
+      }
+
+      .password-field input {
+        padding-right: 90px;
+      }
+
+      .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: 0;
+        color: #a7a0ff;
+        cursor: pointer;
+        font: inherit;
+        font-size: 13px;
+      }
+
+      .signup-panel .btn {
+        padding: 15px 25px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .signup-footer {
+        text-align: center;
+        margin-top: 24px;
+        color: #a6abc1;
+      }
+
+      @media (max-width: 650px) {
+        .signup-panel {
+          padding: 25px 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header th:replace="~{fragments/nav :: nav}"></header>
+
+    <main class="container narrow">
+      <section class="panel signup-panel">
+        <div class="eyebrow">ПРИСЪЕДИНИ СЕ КЪМ EVENTHUB</div>
+
+        <h1>Създай профил</h1>
+
+        <p class="signup-subtitle">
+          Регистрирай се, за да откриваш събития, да запазваш места и да
+          управляваш своите записвания.
+        </p>
+
+        <form
+          th:action="@{/signup}"
+          th:object="${form}"
+          method="post"
+          class="stack"
+        >
+          <!-- Име и фамилия -->
+          <label for="fullName">
+            Име и фамилия
+
+            <input
+              id="fullName"
+              th:field="*{fullName}"
+              placeholder="Иван Иванов"
+              required
+              minlength="2"
+              maxlength="80"
+              autocomplete="name"
+            />
+
+            <small
+              class="error-text"
+              th:if="${#fields.hasErrors('fullName')}"
+              th:errors="*{fullName}"
+            >
+            </small>
+          </label>
+
+          <!-- Имейл -->
+          <label for="email">
+            Имейл адрес
+
+            <input
+              id="email"
+              th:field="*{email}"
+              type="email"
+              placeholder="example@email.com"
+              required
+              autocomplete="email"
+            />
+
+            <small
+              class="error-text"
+              th:if="${#fields.hasErrors('email')}"
+              th:errors="*{email}"
+            >
+            </small>
+          </label>
+
+          <!-- Парола -->
+          <label for="password">
+            Парола
+
+            <div class="password-field">
+              <input
+                id="password"
+                th:field="*{password}"
+                type="password"
+                placeholder="Въведи сигурна парола"
+                required
+                minlength="8"
+                autocomplete="new-password"
+                aria-describedby="passwordRequirements"
+              />
+
+              <button
+                type="button"
+                class="toggle-password"
+                id="togglePassword"
+                aria-label="Покажи паролата"
+                aria-pressed="false"
+              >
+                Покажи
+              </button>
+            </div>
+
+            <small
+              class="error-text"
+              th:if="${#fields.hasErrors('password')}"
+              th:errors="*{password}"
+            >
+            </small>
+          </label>
+
+          <!-- Изисквания към паролата -->
+          <div class="password-requirements" id="passwordRequirements">
+            <h3>Изисквания към паролата</h3>
+
+            <div class="password-rule" id="rule-length">Минимум 8 символа</div>
+
+            <div class="password-rule" id="rule-upper">
+              Поне една главна буква (A–Z)
+            </div>
+
+            <div class="password-rule" id="rule-lower">
+              Поне една малка буква (a–z)
+            </div>
+
+            <div class="password-rule" id="rule-number">
+              Поне една цифра (0–9)
+            </div>
+
+            <div class="password-rule" id="rule-special">
+              Специален символ (@#$%^&)
+            </div>
+          </div>
+
+          <button type="submit" class="btn">Регистрирай се</button>
+        </form>
+
+        <div class="signup-footer">
+          Вече имаш профил?
+          <a th:href="@{/login}">Влез тук</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>© 2026 EventHub. Всички права запазени.</footer>
+
+    <script>
+      const passwordInput = document.getElementById("password");
+
+      const toggleButton = document.getElementById("togglePassword");
+
+      const rules = {
+        length: document.getElementById("rule-length"),
+        upper: document.getElementById("rule-upper"),
+        lower: document.getElementById("rule-lower"),
+        number: document.getElementById("rule-number"),
+        special: document.getElementById("rule-special"),
+      };
+
+      function updatePasswordRules() {
+        const password = passwordInput.value;
+
+        const checks = {
+          length: password.length >= 8,
+          upper: /[A-Z]/.test(password),
+          lower: /[a-z]/.test(password),
+          number: /[0-9]/.test(password),
+          special: /[@#$%^&]/.test(password),
+        };
+
+        Object.keys(checks).forEach((rule) => {
+          rules[rule].classList.toggle("valid", checks[rule]);
+        });
+      }
+
+      passwordInput.addEventListener("input", updatePasswordRules);
+
+      toggleButton.addEventListener("click", function () {
+        const visible = passwordInput.type === "text";
+
+        passwordInput.type = visible ? "password" : "text";
+
+        toggleButton.textContent = visible ? "Покажи" : "Скрий";
+
+        toggleButton.setAttribute("aria-pressed", String(!visible));
+
+        toggleButton.setAttribute(
+          "aria-label",
+          visible ? "Покажи паролата" : "Скрий паролата",
+        );
+      });
+
+      updatePasswordRules();
+    </script>
+  </body>
+</html>

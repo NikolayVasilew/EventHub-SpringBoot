@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Моите събития</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments/nav :: nav}"></header>
+    <main class="container">
+      <h1>Моите регистрации</h1>
+      <div class="cards">
+        <a
+          class="eventcard"
+          th:each="r : ${registrations}"
+          th:href="@{/events/{id}(id=${r.event.id})}"
+          ><span class="pill" th:text="${r.event.location}"></span>
+          <h3 th:text="${r.event.title}"></h3>
+          <p
+            th:text="${#temporals.format(r.event.startsAt,'dd.MM.yyyy HH:mm')}"
+          ></p>
+          <span>Виж събитието →</span></a
+        >
+      </div>
+      <p th:if="${#lists.isEmpty(registrations)}">Все още нямаш регистрации.</p>
+    </main>
+  </body>
+</html>

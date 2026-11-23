@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Вход | EventHub</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+    <style>
+      .auth-layout {
+        min-height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 35px 20px;
+      }
+
+      .auth-panel {
+        width: 100%;
+        max-width: 480px;
+        padding: 40px;
+      }
+
+      .auth-subtitle {
+        color: #b8bdd0;
+        line-height: 1.6;
+      }
+
+      .auth-panel .btn {
+        width: 100%;
+      }
+
+      .auth-footer {
+        text-align: center;
+        margin-top: 25px;
+        color: #a6abc1;
+      }
+
+      @media (max-width: 650px) {
+        .auth-panel {
+          padding: 25px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header th:replace="~{fragments/nav :: nav}"></header>
+
+    <main class="auth-layout">
+      <section class="panel auth-panel">
+        <div class="eyebrow">ДОБРЕ ДОШЪЛ В EVENTHUB</div>
+
+        <h1>Вход в профила</h1>
+
+        <p class="auth-subtitle">
+          Влез, за да се записваш за събития и да управляваш своите участия.
+        </p>
+
+        <div class="alert error" th:if="${param.error}">
+          Невалиден имейл или парола.
+        </div>
+
+        <div class="alert success" th:if="${param.registered}">
+          Регистрацията е успешна. Вече можеш да влезеш.
+        </div>
+
+        <div class="alert success" th:if="${param.logout}">
+          Излезе успешно от профила.
+        </div>
+
+        <form th:action="@{/login}" method="post" class="stack">
+          <label for="username">
+            Имейл
+
+            <input
+              id="username"
+              name="username"
+              type="email"
+              required
+              autocomplete="username"
+              placeholder="example@email.com"
+            />
+          </label>
+
+          <label for="password">
+            Парола
+
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              autocomplete="current-password"
+              placeholder="Въведи паролата си"
+            />
+          </label>
+
+          <input
+            type="hidden"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}"
+          />
+
+          <button type="submit" class="btn">Влез</button>
+        </form>
+
+        <div class="auth-footer">
+          Нямаш профил?
+          <a th:href="@{/signup}"> Регистрирай се </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>© 2026 EventHub</footer>
+  </body>
+</html>

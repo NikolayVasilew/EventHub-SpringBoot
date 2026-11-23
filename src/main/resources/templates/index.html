@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>EventHub | Събития</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <header th:replace="~{fragments/nav :: nav}"></header>
+    <main class="container">
+      <section class="hero">
+        <span class="eyebrow">ОТКРИЙ · УЧАСТВАЙ · СЪЗДАВАЙ</span>
+        <h1>Събития, които си заслужават.</h1>
+        <p>
+          Открий интересни срещи, обучения и технологични конференции. Запази
+          мястото си с един клик.
+        </p>
+        <a class="btn" href="#events">Разгледай събитията ↓</a>
+      </section>
+      <section id="events">
+        <div class="sectionhead">
+          <h2>Предстоящи събития</h2>
+          <form method="get" th:action="@{/}" class="search">
+            <input
+              name="q"
+              th:value="${q}"
+              placeholder="Търси по заглавие..."
+            /><button class="btn small">Търси</button>
+          </form>
+        </div>
+        <div class="cards">
+          <a
+            class="eventcard"
+            th:each="event : ${events}"
+            th:href="@{/events/{id}(id=${event.id})}"
+            ><div class="cardtop">
+              <span class="pill" th:text="${event.location}">София</span
+              ><span
+                class="date"
+                th:text="${#temporals.format(event.startsAt,'dd.MM.yyyy HH:mm')}"
+                >Дата</span
+              >
+            </div>
+            <h3 th:text="${event.title}">Събитие</h3>
+            <p th:text="${event.description}">Описание</p>
+            <div class="cardfoot">
+              <span th:text="'Капацитет: '+${event.capacity}">Капацитет</span
+              ><span>Виж детайли →</span>
+            </div></a
+          >
+        </div>
+        <p th:if="${#lists.isEmpty(events)}" class="muted">
+          Няма намерени събития.
+        </p>
+      </section>
+    </main>
+    <footer>© EventHub · Spring Boot university project</footer>
+  </body>
+</html>
